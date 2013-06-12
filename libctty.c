@@ -393,7 +393,7 @@ int ctty_stat_parse(int pid, struct proc_stat *stat_info){
 
 	stat_info->pid = strtol(scratch, NULL, 10);
 
-	if((parse_ptr = strchr(scratch, ')')) == NULL){
+	if((parse_ptr = strrchr(scratch, ')')) == NULL){
 		fprintf(stderr, "%s: ctty_stat_parse(): strrchr(%lx, %d): %s\n", program_invocation_short_name, \
 				(unsigned long) scratch, ')', \
 				strerror(errno));
