@@ -82,8 +82,27 @@ struct proc_stat{
 };
 
 
+/************************************************************************
+ * Functions for working with controlling ttys: 
+ ************************************************************************/
+
+/* ctty_get_name() is used to discover the controlling tty for a process. */
+char *ctty_get_name(int pid);
+
+/* ctty_get_session() is used to map out the entire process session. */
 struct sid_node *ctty_get_session(char *tty_name);
+
+/* ctty_free_session() is used to release the session data structure. */
 void ctty_free_session(struct sid_node *session);
-int ctty_stat_parse(int pid, struct proc_stat *stat_info);
-char *ctty_getname(int pid);
-int ctty_getfds(int pid, char *tty, int **fds);
+
+
+/************************************************************************
+ * Functions for working with any ttys:
+ ************************************************************************/
+
+/* tty_stat_parse() will parse the processes stat file in /proc. */
+int tty_stat_parse(int pid, struct proc_stat *stat_info);
+
+/* tty_get_fds() returns the list of file descriptors open to the tty you're interested in. */
+int tty_get_fds(int pid, char *tty, int **fds);
+
