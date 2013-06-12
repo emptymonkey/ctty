@@ -22,7 +22,7 @@ The tty driver in the kernel will know what session ID a tty is controlling for.
 
 Pretend you are a computer engineer in the 1960s. Computers are big and slow and users interact with them by feeding them [punch cards](http://en.wikipedia.org/wiki/Punch_cards). However, computers are finally getting fast enough to interact with users in real time. How are you going to design the interface that will allow them to all work on the machine at the same time??
 
-If you're any good, I'll tell you how you'll do it... [You're going to be lazy!](http://c2.com/cgi/wiki?LazinessImpatienceHubris)
+If you're any good, I'll tell you how you'll do it... [You're going to be lazy!](http://threevirtues.com/)
 
 Back in that era, the [old teletype terminals](http://en.wikipedia.org/wiki/Teleprinter) were broadly used in the telecommunications industry. The engineers of the day simply re-purposed this existing technology to fit their needs. This was the birth of the command line.
 
@@ -36,9 +36,6 @@ The [stat](http://linux.die.net/man/5/proc) file contains that information.
 
 Traditionally, there is no easy way to see this information programmatically. (The "[ps j](http://linux.die.net/man/1/ps)" command can help you perform this discovery manually.) I wrote _ctty_ to fill this gap. It does the needed detective work, and reports back to the user. The library gives you a C interface to this functionality.
 
-**In addition to the _ctty_ tool, there's a library too?**
-
-I needed code to do ctty discovery for [another project](https://github.com/emptymonkey/shelljack). The _ctty_ tool was simply my debug test code. I then decided it may be useful enough to be promoted to "tool".
 
 ## _ctty_ Usage ##
 
