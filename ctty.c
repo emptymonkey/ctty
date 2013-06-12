@@ -38,6 +38,8 @@
 
 #include "libctty.h"
 
+#include <pwd.h>
+
 void ctty_print_session(struct sid_node *session_list);
 
 #define MAX_INT_LEN 10
@@ -92,21 +94,31 @@ int main(int argc, char **argv){
 void ctty_print_session(struct sid_node *session_list){
 	int i;
 
-	char uid[MAX_INT_LEN + 1];
-
 	struct sid_node *session;
 	struct pgid_node *pgroup;
 	struct pid_node *proc;
 
+	struct passwd *user;
+
 	session = session_list;
 	while(session){
-
-		memset(uid, 0, MAX_INT_LEN + 1);
-		snprintf(uid, MAX_INT_LEN, "%d", session->uid);
+	
+		errno = 0;	
+		user = getpwuid(session->uid);
+		if(errno){
+			error(-1, errno, "getpwuid(%d)", session->uid);
+			continue;
+		}
 
 		printf("--------------------------------\n");
 		printf("TTY: %s\n", session->ctty);
-		printf("USER: %s\n\n", cuserid(uid));
+		
+		if(user){
+			printf("USER: %s\n\n", user->pw_name);
+		}else{
+			printf("USER: No such user: %d\n\n", session->uid);
+		}
+
 		printf("SID\tPGID\tPID\tFDs\n");
 		printf("---\t----\t---\t---\n");
 
