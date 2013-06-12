@@ -47,8 +47,8 @@ char *ctty_get_name(int pid){
 	struct proc_stat stat_info;
 
 
-	if((retval = tty_stat_parse(pid, &stat_info)) == -1){
-		fprintf(stderr, "%s: ctty_get_name(): tty_stat_parse(%d, %lx): %s\n", program_invocation_short_name, \
+	if((retval = ctty_stat_parse(pid, &stat_info)) == -1){
+		fprintf(stderr, "%s: ctty_get_name(): ctty_stat_parse(%d, %lx): %s\n", program_invocation_short_name, \
 				pid, (unsigned long) &stat_info, \
 				strerror(errno));
 		goto CLEAN_UP;
@@ -184,8 +184,8 @@ struct sid_node *ctty_get_session(char *tty_name){
 				return(NULL);
 			}
 
-			if((retval = tty_stat_parse(pid, &tmp_stat_info)) == -1){
-				fprintf(stderr, "%s: ctty_get_session(): tty_stat_parse(%d, %lx): %s\n", program_invocation_short_name, \
+			if((retval = ctty_stat_parse(pid, &tmp_stat_info)) == -1){
+				fprintf(stderr, "%s: ctty_get_session(): ctty_stat_parse(%d, %lx): %s\n", program_invocation_short_name, \
 						pid, (unsigned long) &tmp_stat_info, \
 						strerror(errno));
 				globfree(&pglob);
@@ -211,8 +211,8 @@ struct sid_node *ctty_get_session(char *tty_name){
 				new_pid_ptr->pgid = tmp_stat_info.pgrp;
 				new_pid_ptr->sid = tmp_stat_info.session;
 
-				if((new_pid_ptr->fd_count = tty_get_fds(new_pid_ptr->pid, tty_name, &new_pid_ptr->fds)) == -1){
-					fprintf(stderr, "%s: ctty_get_session(): tty_get_fds(%d, %s, %lx): %s\n", program_invocation_short_name, \
+				if((new_pid_ptr->fd_count = ctty_get_fds(new_pid_ptr->pid, tty_name, &new_pid_ptr->fds)) == -1){
+					fprintf(stderr, "%s: ctty_get_session(): ctty_get_fds(%d, %s, %lx): %s\n", program_invocation_short_name, \
 							new_pid_ptr->pid, tty_name, (unsigned long) &new_pid_ptr->fds, \
 							strerror(errno));
 					globfree(&pglob);
@@ -451,7 +451,7 @@ struct sid_node *ctty_get_session(char *tty_name){
 
 /************************************************************************
  *
- * tty_stat_parse()
+ * ctty_stat_parse()
  *
  * Inputs: 
  *		The name of the /proc/PID/stat file you want to parse.
@@ -461,7 +461,7 @@ struct sid_node *ctty_get_session(char *tty_name){
  *		An error code. (Hopefully zero, if all is well.)
  *
  ************************************************************************/
-int tty_stat_parse(int pid, struct proc_stat *stat_info){
+int ctty_stat_parse(int pid, struct proc_stat *stat_info){
 	int stat_fd;
 
 	char scratch[BUFF_LEN];
@@ -471,14 +471,14 @@ int tty_stat_parse(int pid, struct proc_stat *stat_info){
 	snprintf(scratch, BUFF_LEN, "/proc/%d/stat", pid);
 
 	if((stat_fd = open(scratch, O_RDONLY)) == -1){
-		fprintf(stderr, "%s: tty_stat_parse(): open(%s, %d): %s\n", program_invocation_short_name, \
+		fprintf(stderr, "%s: ctty_stat_parse(): open(%s, %d): %s\n", program_invocation_short_name, \
 				scratch, O_RDONLY, \
 				strerror(errno));
 		return(-1);
 	}
 
 	if((read(stat_fd, scratch, sizeof(scratch))) < 1){
-		fprintf(stderr, "%s: tty_stat_parse(): read(%d, %lx, %d): %s\n", program_invocation_short_name, \
+		fprintf(stderr, "%s: ctty_stat_parse(): read(%d, %lx, %d): %s\n", program_invocation_short_name, \
 				stat_fd, (unsigned long) scratch, (int) sizeof(scratch), \
 				strerror(errno));
 		return(-1);
@@ -488,7 +488,7 @@ int tty_stat_parse(int pid, struct proc_stat *stat_info){
 	stat_info->pid = strtol(scratch, NULL, 10);
 
 	if((parse_ptr = strrchr(scratch, ')')) == NULL){
-		fprintf(stderr, "%s: tty_stat_parse(): strrchr(%lx, %d): %s\n", program_invocation_short_name, \
+		fprintf(stderr, "%s: ctty_stat_parse(): strrchr(%lx, %d): %s\n", program_invocation_short_name, \
 				(unsigned long) scratch, ')', \
 				strerror(errno));
 		return(-1);
@@ -499,7 +499,7 @@ int tty_stat_parse(int pid, struct proc_stat *stat_info){
 	stat_info->ppid = strtol(parse_ptr, &parse_ptr, 10);
 	stat_info->pgrp = strtol(parse_ptr, &parse_ptr, 10);
 	stat_info->session = strtol(parse_ptr, &parse_ptr, 10);
-	stat_info->tty_nr= strtol(parse_ptr, NULL, 10);
+	stat_info->tty_nr = strtol(parse_ptr, NULL, 10);
 
 	return(0);
 }
@@ -507,7 +507,7 @@ int tty_stat_parse(int pid, struct proc_stat *stat_info){
 
 /************************************************************************
  *
- * tty_get_fds()
+ * ctty_get_fds()
  *
  * Inputs:
  *		The pid of the process we are interested in.
@@ -519,7 +519,7 @@ int tty_stat_parse(int pid, struct proc_stat *stat_info){
  *		The total count of file descriptors being returned in the array.
  *
  ************************************************************************/
-int tty_get_fds(int pid, char *tty, int **fds){
+int ctty_get_fds(int pid, char *tty, int **fds){
 	char path[MAX_PATH_LEN + 1];
 	char scratch[MAX_PATH_LEN + 1];
 	DIR *proc_pid_fd;
@@ -528,14 +528,14 @@ int tty_get_fds(int pid, char *tty, int **fds){
 
 	memset(path, 0, sizeof(path));
 	if(snprintf(path, sizeof(path), "/proc/%d/fd/", pid) < 0){
-		fprintf(stderr, "%s: tty_get_fds(): snprintf(%lx, %d, %s, %d): %s\n", program_invocation_short_name, \
+		fprintf(stderr, "%s: ctty_get_fds(): snprintf(%lx, %d, %s, %d): %s\n", program_invocation_short_name, \
 				(unsigned long) path, (int) sizeof(path), "/proc/%%d/fd/", pid, \
 				strerror(errno));
 		return(-1);
 	}
 
 	if(!(proc_pid_fd = opendir(path))){
-		fprintf(stderr, "%s: tty_get_fds(): opendir(%s): %s\n", program_invocation_short_name, \
+		fprintf(stderr, "%s: ctty_get_fds(): opendir(%s): %s\n", program_invocation_short_name, \
 				path, \
 				strerror(errno));
 		return(-1);
@@ -551,7 +551,7 @@ int tty_get_fds(int pid, char *tty, int **fds){
 
 			memset(scratch, 0, sizeof(scratch));
 			if(snprintf(scratch, sizeof(scratch), "/proc/%d/fd/%s", pid, dir_entry->d_name) < 0){
-				fprintf(stderr, "%s: tty_get_fds(): snprintf(%lx, %d, %s, %d, %s): %s\n", program_invocation_short_name, \
+				fprintf(stderr, "%s: ctty_get_fds(): snprintf(%lx, %d, %s, %d, %s): %s\n", program_invocation_short_name, \
 						(unsigned long) scratch, (int) sizeof(scratch), "/proc/%%d/fd/", pid, dir_entry->d_name, \
 						strerror(errno));
 				count = -1;
@@ -560,7 +560,7 @@ int tty_get_fds(int pid, char *tty, int **fds){
 
 			memset(path, 0, sizeof(path));
 			if(readlink(scratch, path, sizeof(path) - 1) == -1){
-				fprintf(stderr, "%s: tty_get_fds(): readlink(%lx, %s, %d): %s\n", program_invocation_short_name, \
+				fprintf(stderr, "%s: ctty_get_fds(): readlink(%lx, %s, %d): %s\n", program_invocation_short_name, \
 						(unsigned long) scratch, path, (int) sizeof(path) - 1, \
 						strerror(errno));
 				count = -1;
@@ -578,7 +578,7 @@ int tty_get_fds(int pid, char *tty, int **fds){
 		if(!i){
 			rewinddir(proc_pid_fd);
 			if(((*fds = (int *) malloc(count * sizeof(int))) == 0) && count){
-				fprintf(stderr, "%s: tty_get_fds(): malloc(%d): %s\n", program_invocation_short_name, \
+				fprintf(stderr, "%s: ctty_get_fds(): malloc(%d): %s\n", program_invocation_short_name, \
 						count * (int) sizeof(int), \
 						strerror(errno));
 				count = -1;
