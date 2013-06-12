@@ -4,7 +4,7 @@ _ctty_ is a controlling tty discovery tool (and library).
 
 **What is a tty?**
 
-In Unix and Linux, users can issue commands to the operating system through a [command line](http://en.wikipedia.org/wiki/Command_line). In the modern era, a command line is implemented as a [shell](http://en.wikipedia.org/wiki/Shell_%28computing%29) attached to a [pseudo-terminal](http://linux.die.net/man/7/pty). The pseudo-terminal itself is a type of tty and leverages the [tty subsystem](http://lxr.linux.no/#linux+v3.9.5/drivers/tty) of the [Linux kernel](https://www.kernel.org/).
+In Unix and Linux, users can issue commands to the operating system through a [command line](http://en.wikipedia.org/wiki/Command_line). In the modern era, a command line is implemented as a [shell](http://en.wikipedia.org/wiki/Shell_%28computing%29) attached to a [pseudo-terminal](http://linux.die.net/man/7/pty). The pseudo-terminal itself is a type of tty and leverages the [tty driver](http://lxr.linux.no/#linux+v3.9.5/drivers/tty) section of the [Linux kernel](https://www.kernel.org/).
 
 **What is a _controlling_ tty?**
 
@@ -20,17 +20,13 @@ The tty driver in the kernel will know what session ID a tty is controlling for.
 
 **This is all pretty crazy? How did it end up this way?**
 
-***Short Version***
+Pretend you are a computer engineer in the 1960s. Computers are big and slow and users interact with them by feeding them [punch cards](http://en.wikipedia.org/wiki/Punch_cards). However, computers are finally getting fast enough to interact with users in real time. How are you going to design the interface that will allow them to all work on the machine at the same time??
 
-Pretend you are a computer engineer in the 1960s. Computers are big and slow. Users are used to interacting with them by feeding them [punch cards](http://en.wikipedia.org/wiki/Punch_cards). Around this time, however, the computers finally get fast enough to interact with users in real time. What interface would you invent to allow multiple users to talk to the machine all at the same time??
+If you're any good, I'll tell you how you'll do it... [You're going to be lazy!](http://c2.com/cgi/wiki?LazinessImpatienceHubris)
 
-If you're any good, I'll tell you how you'd do it... [You'd be lazy!](http://c2.com/cgi/wiki?LazinessImpatienceHubris)
+Back in that era, the [old teletype terminals](http://en.wikipedia.org/wiki/Teleprinter) were broadly used in the telecommunications industry. The engineers of the day simply re-purposed this existing technology to fit their needs. This was the birth of the command line.
 
-Back in that era, the [old teletype terminals](http://en.wikipedia.org/wiki/Teleprinter) were broadly used in the communications industry. The engineers of the day simply re-purposed this technology to fit their needs. This was the birth of the command line.
-
-***Long Version***
-
-Go read [The TTY demystified](http://www.linusakesson.net/programming/tty/) by [Linus Åkesson](http://www.linusakesson.net/). On this topic, his page is the most enlightening on the internet. Many thanks to Linus for putting this together!
+Make sure you read [The TTY demystified](http://www.linusakesson.net/programming/tty/) by [Linus Åkesson](http://www.linusakesson.net/). His page is the most enlightening for this topic anywhere on the internet. Many thanks to Linus for putting it together!
 
 **How can you tell what the controlling tty is for any given process?**
 
