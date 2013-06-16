@@ -40,38 +40,33 @@ Traditionally, there is no easy way to see this information programmatically. (T
 ## _ctty_ Usage ##
 
 To see the session information for a particular tty:
-<pre><code>empty@monkey:~$ ctty /dev/pts/1
-&#45;-------------------------------
-TTY: /dev/pts/1
-USER: empty
+```
+monkey@monkey:~$ ctty /dev/pts/3
+/dev/pts/3:monkey:3099:3099:3099:0,1,2,255
+/dev/pts/3:monkey:3099:3158:3158:0,1,2
+/dev/pts/3:monkey:3099:3158:3170:1,2
+/dev/pts/3:monkey:3099:3176:3176:15,16,17,18,19
+/dev/pts/3:monkey:3099:3184:3184:0,1,2,5,6,7
+```
 
-SID&#09;PGID&#09;PID&#09;FDs
----&#09;----&#09;---&#09;---
-1480
-&#09;1480
-&#09;&#09;1480
-&#09;&#09;&#09;0
-&#09;&#09;&#09;1
-&#09;&#09;&#09;2
-&#09;&#09;&#09;255
-&#09;2082
-&#09;&#09;2082
-&#09;&#09;&#09;0
-&#09;&#09;&#09;1
-&#09;&#09;&#09;2
-&#45;-------------------------------
-</code></pre>
+The format is:
 
-The output fields above are:
+	TTY_NAME:USER:SID:PGID:PID:FD1,FD2,...,FDn
 
- * SID:	Session ID
- * PGID:	Process group ID
- * PID:	Process ID
- * FDs:	File descriptors *which are open to this controlling tty.*
+The fields are:
 
-To see the session information for all tty's:
+ * TTY_NAME: tty name
+ * USER: user name (or uid if no match in /etc/passwd)
+ * SID:	session ID
+ * PGID:	process group ID
+ * PID:	process ID
+ * FDs:	file descriptors *which are open to this controlling tty.*
 
-    empty@monkey:~$ sudo ctty
+Notes:
+
+ * Only the file descriptors that are pointing to the ctty are listed.
+ * If you run ctty without any arguments, it will attempt to return the results for all ttys. (This will probably fail for most ttys unless you are root.)
+ * The -v switch will give a different output format that is a bit easier to read, though much longer and not fit for scripting.
 
 ## _libctty_ Usage ##
 
