@@ -41,12 +41,12 @@ Traditionally, there is no easy way to see this information programmatically. (T
 
 To see the session information for a particular tty:
 ```
-monkey@monkey:~$ ctty /dev/pts/3
-/dev/pts/3:monkey:3099:3099:3099:0,1,2,255
-/dev/pts/3:monkey:3099:3158:3158:0,1,2
-/dev/pts/3:monkey:3099:3158:3170:1,2
-/dev/pts/3:monkey:3099:3176:3176:15,16,17,18,19
-/dev/pts/3:monkey:3099:3184:3184:0,1,2,5,6,7
+empty@monkey:~$ ctty /dev/pts/3
+/dev/pts/3:empty:3099:3099:3099:0,1,2,255
+/dev/pts/3:empty:3099:3158:3158:0,1,2
+/dev/pts/3:empty:3099:3158:3170:1,2
+/dev/pts/3:empty:3099:3176:3176:15,16,17,18,19
+/dev/pts/3:empty:3099:3184:3184:0,1,2,5,6,7
 ```
 
 The format is:
