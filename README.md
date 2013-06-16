@@ -65,7 +65,7 @@ The fields are:
 Notes:
 
  * Only the file descriptors that are pointing to the ctty are listed.
- * If you run ctty without any arguments, it will attempt to return the results for all ttys. (This will probably fail for most ttys unless you are root.)
+ * If you run _ctty_ without any arguments, it will attempt to return the results for all ttys. (This will probably fail for most ttys unless you are root.)
  * The -v switch will give a different output format that is a bit easier to read, though much longer and not fit for scripting.
 
 ## _libctty_ Usage ##
