@@ -18,23 +18,19 @@ Processes are grouped into process groups for [job control](http://en.wikipedia.
 
 The tty driver in the kernel will know what session ID a tty is controlling for. Likewise, every process in a session will know which tty is controlling for it. Honestly, it seems to be a bit of a conspiracy between the driver and all of the processes in the session. No single piece acts authoritatively, and this relationship requires that all the participating members play well together. In the end, it seems to work out pretty well. 
 
-**This is all pretty crazy? How did it end up this way?**
+**This sounds totally crazy? How did it end up this way?**
 
-Pretend you are a computer engineer in the 1960s. Computers are big and slow and users interact with them by feeding them [punch cards](http://en.wikipedia.org/wiki/Punch_cards). However, computers are finally getting fast enough to interact with users in real time. How are you going to design the interface that will allow them to all work on the machine at the same time??
-
-If you're any good, I'll tell you how you'll do it... [You're going to be lazy!](http://threevirtues.com/)
-
-Back in that era, the [old teletype terminals](http://en.wikipedia.org/wiki/Teleprinter) were broadly used in the telecommunications industry. The engineers of the day simply re-purposed this existing technology to fit their needs. This was the birth of the command line.
+Back in late 1960s, computers were finally fast enough to interact with users in real time. Coincidentally, the [old teletype terminals](http://en.wikipedia.org/wiki/Teleprinter) were broadly used in throughout the telecommunications industry. The engineers of the day, being appropriately [lazy](http://threevirtues.com/), simply re-purposed this existing technology to fit their needs. This was the birth of the command line.
 
 Make sure you read [The TTY demystified](http://www.linusakesson.net/programming/tty/) by [Linus Åkesson](http://www.linusakesson.net/). His page is the most enlightening for this topic anywhere on the internet. Many thanks to Linus for putting it together!
 
 **How can you tell what the controlling tty is for any given process?**
 
-The [stat](http://linux.die.net/man/5/proc) file contains that information. 
+The [stat](http://linux.die.net/man/5/proc) file for a process will contain that information. 
 
 **How can you tell which session is controlled by any given tty?**
 
-Traditionally, there is no easy way to see this information programmatically. (The "[ps j](http://linux.die.net/man/1/ps)" command can help you perform this discovery manually.) I wrote _ctty_ to fill this gap. It does the needed detective work, and reports back to the user. The library gives you a C interface to this functionality.
+Traditionally, there is no easy way to see this information programmatically. (The "[ps j](http://linux.die.net/man/1/ps)" command can help you perform this discovery manually.) I wrote _ctty_ to fill this gap. It does the needed detective work, and reports back to the user. _libctty_ gives you a C interface to this functionality.
 
 
 ## _ctty_ Usage ##
@@ -64,13 +60,14 @@ The fields are:
 
 Notes:
 
- * Only the file descriptors that are pointing to the ctty are listed.
+ * Only the file descriptors that are pointing to the processes controlling tty are listed.
  * If you run _ctty_ without any arguments, it will attempt to return the results for all ttys. (This will probably fail for most ttys unless you are root.)
  * The -v switch will give a different output format that is a bit easier to read, though much longer and not fit for scripting.
 
 ## _libctty_ Usage ##
 
 This is best documented inside the source code. However, as a quick overview, _libctty.h_ defines the following interfaces:
+
 ```
 /* ctty_get_name() is used to discover the controlling tty for a process. */
 char *ctty_get_name(int pid);
