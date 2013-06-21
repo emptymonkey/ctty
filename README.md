@@ -1,10 +1,10 @@
 # ctty #
 
-_ctty_ is a [controlling tty](http://en.wikipedia.org/wiki/POSIX_terminal_interface#Controlling_terminals_and_process_groups) discovery tool (and library).
+_ctty_ is a [controlling tty](http://en.wikipedia.org/wiki/POSIX_terminal_interface#Controlling_terminals_and_process_groups) discovery tool (and library) for [Linux](http://en.wikipedia.org/wiki/Linux).
 
 **What is a tty?**
 
-In [Linux](http://en.wikipedia.org/wiki/Linux), users can issue commands to the operating system through a [command line](http://en.wikipedia.org/wiki/Command_line). In the modern era, a command line is implemented as a [shell](http://en.wikipedia.org/wiki/Shell_%28computing%29) attached to a [pseudo-terminal](http://linux.die.net/man/7/pty). The pseudo-terminal itself is a type of [tty](http://en.wikipedia.org/wiki/Teleprinter) and leverages the [tty driver](http://lxr.linux.no/#linux+v3.9.5/drivers/tty) section of the [Linux kernel](https://www.kernel.org/).
+In Linux, users can issue commands to the operating system through a [command line](http://en.wikipedia.org/wiki/Command_line). In the modern era, a command line is implemented as a [shell](http://en.wikipedia.org/wiki/Shell_%28computing%29) attached to a [pseudo-terminal](http://linux.die.net/man/7/pty). The pseudo-terminal itself is a type of [tty](http://en.wikipedia.org/wiki/Teleprinter) and leverages the [tty driver](http://lxr.linux.no/#linux+v3.9.5/drivers/tty) section of the [Linux kernel](https://www.kernel.org/).
 
 **What is a _controlling_ tty?**
 
