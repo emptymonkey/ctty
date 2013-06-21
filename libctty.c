@@ -48,9 +48,11 @@ char *ctty_get_name(int pid){
 
 
 	if((retval = ctty_stat_parse(pid, &stat_info)) == -1){
+#ifdef DEBUG
 		fprintf(stderr, "%s: ctty_get_name(): ctty_stat_parse(%d, %lx): %s\n", program_invocation_short_name, \
 				pid, (unsigned long) &stat_info, \
 				strerror(errno));
+#endif
 		goto CLEAN_UP;
 	}
 
@@ -67,9 +69,11 @@ char *ctty_get_name(int pid){
 		}
 
 		if(!(dev_dir = opendir(path))){
+#ifdef DEBUG
 			fprintf(stderr, "%s: ctty_get_name(): opendir(%s): %s\n", program_invocation_short_name, \
 					path, \
 					strerror(errno));
+#endif
 			return(NULL);
 		}
 
@@ -87,17 +91,21 @@ char *ctty_get_name(int pid){
 			}
 
 			if(stat(scratch, &dev_info)){
+#ifdef DEBUG
 				fprintf(stderr, "%s: ctty_get_name(): stat(%s, %lx): %s\n", program_invocation_short_name, \
 						scratch, (unsigned long) &dev_info, \
 						strerror(errno));
+#endif
 				goto CLEAN_UP;
 			}
 
 			if(stat_info.tty_nr == (int) dev_info.st_rdev){
 				if((name = (char *) malloc(strlen(scratch) + 1)) == NULL){
+#ifdef DEBUG
 					fprintf(stderr, "%s: ctty_get_name(): malloc(%d): %s\n", program_invocation_short_name, \
 							(int) strlen(scratch) + 1, \
 							strerror(errno));
+#endif
 					goto CLEAN_UP;
 				}
 				memset(name, 0, strlen(scratch) + 1);
@@ -145,9 +153,11 @@ struct sid_node *ctty_get_session(char *tty_name){
 	 *
 	 */
 	if((retval = stat(tty_name, &stat_buf)) == -1){
+#ifdef DEBUG
 		fprintf(stderr, "%s: ctty_get_session(): stat(%s, %lx): %s\n", program_invocation_short_name, \
 				tty_name, (unsigned long) &stat_buf, \
 				strerror(errno));
+#endif
 		return(NULL);
 	}
 
@@ -159,17 +169,21 @@ struct sid_node *ctty_get_session(char *tty_name){
 	 * We are only interested in processes for which tty_name is a controlling tty.
 	 */
 	if((retval = glob("/proc/[0-9]*/stat", 0, NULL, &pglob))){
+#ifdef DEBUG
 		fprintf(stderr, "%s: ctty_get_session(): glob(%s, %d, %p, %lx): retval == %d\n", program_invocation_short_name, \
 				"/proc/[0-9]*/stat", 0, NULL, (unsigned long) &pglob, \
 				retval);
+#endif
 		return(NULL);
 	}
 
 	for(i = 0; i < (int) pglob.gl_pathc; i++){
 		if((retval = stat(pglob.gl_pathv[i], &stat_buf)) == -1){
+#ifdef DEBUG
 			fprintf(stderr, "%s: ctty_get_session(): stat(%s, %lx): %s\n", program_invocation_short_name, \
 					pglob.gl_pathv[i], (unsigned long) &stat_buf, \
 					strerror(errno));
+#endif
 			globfree(&pglob);
 			return(NULL);
 		}
@@ -177,17 +191,21 @@ struct sid_node *ctty_get_session(char *tty_name){
 		if(ctty_uid == stat_buf.st_uid){
 
 			if((pid = (int) strtol((pglob.gl_pathv[i]) + 6, NULL, 10)) == 0){
+#ifdef DEBUG
 				fprintf(stderr, "%s: ctty_get_session(): strtol(%lx, %p, %d): %s\n", program_invocation_short_name, \
 						(unsigned long) (pglob.gl_pathv[i]) + 6, NULL, 10, \
 						strerror(errno));
+#endif
 				globfree(&pglob);
 				return(NULL);
 			}
 
 			if((retval = ctty_stat_parse(pid, &tmp_stat_info)) == -1){
+#ifdef DEBUG
 				fprintf(stderr, "%s: ctty_get_session(): ctty_stat_parse(%d, %lx): %s\n", program_invocation_short_name, \
 						pid, (unsigned long) &tmp_stat_info, \
 						strerror(errno));
+#endif
 				globfree(&pglob);
 				return(NULL);
 			}	
@@ -199,9 +217,11 @@ struct sid_node *ctty_get_session(char *tty_name){
 				 *
 				 */
 				if((new_pid_ptr = (struct pid_node *) malloc(sizeof(struct pid_node))) == NULL){
+#ifdef DEBUG
 					fprintf(stderr, "%s: ctty_get_session(): malloc(%d): %s\n", program_invocation_short_name, \
 							(int) sizeof(struct pid_node), \
 							strerror(errno));
+#endif
 					globfree(&pglob);
 					return(NULL);
 				}	
@@ -212,9 +232,11 @@ struct sid_node *ctty_get_session(char *tty_name){
 				new_pid_ptr->sid = tmp_stat_info.session;
 
 				if((new_pid_ptr->fd_count = ctty_get_fds(new_pid_ptr->pid, tty_name, &new_pid_ptr->fds)) == -1){
+#ifdef DEBUG
 					fprintf(stderr, "%s: ctty_get_session(): ctty_get_fds(%d, %s, %lx): %s\n", program_invocation_short_name, \
 							new_pid_ptr->pid, tty_name, (unsigned long) &new_pid_ptr->fds, \
 							strerror(errno));
+#endif
 					globfree(&pglob);
 					clean_pids(new_pid_ptr);
 					clean_pids(head_pid_ptr);
@@ -291,9 +313,11 @@ struct sid_node *ctty_get_session(char *tty_name){
 	 *
 	 */
 	if((tmp_sid_ptr = (struct sid_node *) malloc(sizeof(struct sid_node))) == NULL){
+#ifdef DEBUG
 		fprintf(stderr, "%s: ctty_get_session(): malloc(%d): %s\n", program_invocation_short_name, \
 				(int) sizeof(struct sid_node), \
 				strerror(errno));
+#endif
 		clean_pids(head_pid_ptr);
 		return(NULL);
 	}
@@ -304,9 +328,11 @@ struct sid_node *ctty_get_session(char *tty_name){
 
 	retval = strlen(tty_name);
 	if((tmp_sid_ptr->ctty = (char *) malloc(retval + 1)) == NULL){
+#ifdef DEBUG
 		fprintf(stderr, "%s: ctty_get_session(): malloc(%d): %s\n", program_invocation_short_name, \
 				retval + 1, \
 				strerror(errno));
+#endif
 		clean_pids(head_pid_ptr);
 		ctty_free_session(tmp_sid_ptr);
 		return(NULL);
@@ -330,9 +356,11 @@ struct sid_node *ctty_get_session(char *tty_name){
 	while(head_pid_ptr){
 
 		if((new_pgid_ptr = (struct pgid_node *) malloc(sizeof(struct pgid_node))) == NULL){
+#ifdef DEBUG
 			fprintf(stderr, "%s: ctty_get_session(): malloc(%d): %s\n", program_invocation_short_name, \
 					(int) sizeof(struct pgid_node), \
 					strerror(errno));
+#endif
 			clean_pids(head_pid_ptr);
 			ctty_free_session(tmp_sid_ptr);
 			return(NULL);
@@ -471,16 +499,20 @@ int ctty_stat_parse(int pid, struct proc_stat *stat_info){
 	snprintf(scratch, BUFF_LEN, "/proc/%d/stat", pid);
 
 	if((stat_fd = open(scratch, O_RDONLY)) == -1){
+#ifdef DEBUG
 		fprintf(stderr, "%s: ctty_stat_parse(): open(%s, %d): %s\n", program_invocation_short_name, \
 				scratch, O_RDONLY, \
 				strerror(errno));
+#endif
 		return(-1);
 	}
 
 	if((read(stat_fd, scratch, sizeof(scratch))) < 1){
+#ifdef DEBUG
 		fprintf(stderr, "%s: ctty_stat_parse(): read(%d, %lx, %d): %s\n", program_invocation_short_name, \
 				stat_fd, (unsigned long) scratch, (int) sizeof(scratch), \
 				strerror(errno));
+#endif
 		return(-1);
 	}
 	close(stat_fd);
@@ -488,9 +520,11 @@ int ctty_stat_parse(int pid, struct proc_stat *stat_info){
 	stat_info->pid = strtol(scratch, NULL, 10);
 
 	if((parse_ptr = strrchr(scratch, ')')) == NULL){
+#ifdef DEBUG
 		fprintf(stderr, "%s: ctty_stat_parse(): strrchr(%lx, %d): %s\n", program_invocation_short_name, \
 				(unsigned long) scratch, ')', \
 				strerror(errno));
+#endif
 		return(-1);
 	}
 
@@ -528,16 +562,20 @@ int ctty_get_fds(int pid, char *tty, int **fds){
 
 	memset(path, 0, sizeof(path));
 	if(snprintf(path, sizeof(path), "/proc/%d/fd/", pid) < 0){
+#ifdef DEBUG
 		fprintf(stderr, "%s: ctty_get_fds(): snprintf(%lx, %d, %s, %d): %s\n", program_invocation_short_name, \
 				(unsigned long) path, (int) sizeof(path), "/proc/%%d/fd/", pid, \
 				strerror(errno));
+#endif
 		return(-1);
 	}
 
 	if(!(proc_pid_fd = opendir(path))){
+#ifdef DEBUG
 		fprintf(stderr, "%s: ctty_get_fds(): opendir(%s): %s\n", program_invocation_short_name, \
 				path, \
 				strerror(errno));
+#endif
 		return(-1);
 	}
 
@@ -551,18 +589,22 @@ int ctty_get_fds(int pid, char *tty, int **fds){
 
 			memset(scratch, 0, sizeof(scratch));
 			if(snprintf(scratch, sizeof(scratch), "/proc/%d/fd/%s", pid, dir_entry->d_name) < 0){
+#ifdef DEBUG
 				fprintf(stderr, "%s: ctty_get_fds(): snprintf(%lx, %d, %s, %d, %s): %s\n", program_invocation_short_name, \
 						(unsigned long) scratch, (int) sizeof(scratch), "/proc/%%d/fd/", pid, dir_entry->d_name, \
 						strerror(errno));
+#endif
 				count = -1;
 				goto CLEAN_UP;
 			}
 
 			memset(path, 0, sizeof(path));
 			if(readlink(scratch, path, sizeof(path) - 1) == -1){
+#ifdef DEBUG
 				fprintf(stderr, "%s: ctty_get_fds(): readlink(%lx, %s, %d): %s\n", program_invocation_short_name, \
 						(unsigned long) scratch, path, (int) sizeof(path) - 1, \
 						strerror(errno));
+#endif
 				count = -1;
 				goto CLEAN_UP;
 			}
@@ -578,9 +620,11 @@ int ctty_get_fds(int pid, char *tty, int **fds){
 		if(!i){
 			rewinddir(proc_pid_fd);
 			if(((*fds = (int *) malloc(count * sizeof(int))) == 0) && count){
+#ifdef DEBUG
 				fprintf(stderr, "%s: ctty_get_fds(): malloc(%d): %s\n", program_invocation_short_name, \
 						count * (int) sizeof(int), \
 						strerror(errno));
+#endif
 				count = -1;
 				goto CLEAN_UP;
 			}

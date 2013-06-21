@@ -1,3 +1,4 @@
+#undef DEBUG
 
 #define _GNU_SOURCE
 

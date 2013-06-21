@@ -43,7 +43,7 @@ void ctty_print_session(struct sid_node *session_list, int verbose);
 
 
 void usage(){
-	fprintf(stderr, "usage: %s [-c] [TTY_NAME]\n", program_invocation_short_name);
+	fprintf(stderr, "usage: %s [-v] [TTY_NAME]\n", program_invocation_short_name);
 	fprintf(stderr, "\t-v\tverbose reporting format\n");
 	exit(-1);
 }
@@ -85,8 +85,9 @@ int main(int argc, char **argv){
 					"/dev/pts/[0-9]*", 0, NULL, (unsigned long) &pglob);
 		}
 		for(i = 0; i < (int) pglob.gl_pathc; i++){
+			errno = 0;
 			if(((session_tmp = ctty_get_session(pglob.gl_pathv[i])) == NULL) && (errno)){
-				fprintf(stderr, "ctty_get_session(%s)", pglob.gl_pathv[i]);
+				fprintf(stderr, "ctty_get_session(%s): %s\n", pglob.gl_pathv[i], strerror(errno));
 			}else if(session_tmp){
 
 				if(!session_head){
