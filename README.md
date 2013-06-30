@@ -69,29 +69,28 @@ Note:
 
 This is best documented inside the source code. However, as a quick overview, _libctty.h_ defines the following interfaces:
 
-```
-/* ctty_get_name() is used to discover the controlling tty for a process. */
-char *ctty_get_name(int pid);
-
-/* ctty_get_session() is used to map out the entire process session. */
-struct sid_node *ctty_get_session(char *tty_name);
-
-/* ctty_free_session() is used to release the session data structure. */
-void ctty_free_session(struct sid_node *session);
-
-/* ctty_stat_parse() will pull ctty and session related info from the processes stat file. */
-int ctty_stat_parse(int pid, struct proc_stat *stat_info);
-
-/* ctty_get_fds() returns the list of file descriptors open to the tty you're interested in. */
-int ctty_get_fds(int pid, char *tty, int **fds);
-```
+	/* ctty_get_name() is used to discover the controlling tty for a process. */
+	char *ctty_get_name(int pid);
+	
+	/* ctty_get_session() is used to map out the entire process session. */
+	struct sid_node *ctty_get_session(char *tty_name);
+	
+	/* ctty_free_session() is used to release the session data structure. */
+	void ctty_free_session(struct sid_node *session);
+	
+	/* ctty_stat_parse() will pull ctty and session related info from the processes stat file. */
+	int ctty_stat_parse(int pid, struct proc_stat *stat_info);
+	
+	/* ctty_get_fds() returns the list of file descriptors open to the tty you're interested in. */
+	int ctty_get_fds(int pid, char *tty, int **fds);
 
 ## Installation ##
 
-```
-git clone git@github.com:emptymonkey/ctty.git
-cd ctty
-make
-```
+	git clone git@github.com:emptymonkey/ctty.git
+	cd ctty
+	make
 
+## A Quick Note on Ethics ##
+
+I write and release these tools with the intention of educating the larger [IT](http://en.wikipedia.org/wiki/Information_technology) community and empowering legitimate pentesters. If I can write these tools in my spare time, then rest assured that the dedicated malicious actors have already developed versions of their own.
 
