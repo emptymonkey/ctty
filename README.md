@@ -26,7 +26,9 @@ Make sure you read [The TTY demystified](http://www.linusakesson.net/programming
 
 **How can you tell what the controlling tty is for any given process?**
 
-The [ctermid](http://linux.die.net/man/3/ctermid) function will report the ctty name for the current process. There is no system or library call that will report that information for another process. The [stat](http://linux.die.net/man/5/proc) file for any given process will contain that information, though not in a format easily consumed by humans:
+The [ctermid](http://linux.die.net/man/3/ctermid) function will return the name of the controlling tty for the process that calls it, but this output is not particularly helpful for discovery. This function exists only to aid in portability and will always return the string "/dev/tty" regardless of which terminal or pseudo-terminal device is controlling for the process.
+
+Further, there is no system or library call that will report the controlling tty for another process. The [stat](http://linux.die.net/man/5/proc) file for any given process will contain that information, though not in a format easily consumed by humans:
 
 	tty_nr %d   The controlling terminal of the process.  (The minor device number is contained in
 	            the combination  of  bits 31 to 20 and 7 to 0; the major device number is in bits
