@@ -26,11 +26,16 @@ Make sure you read [The TTY demystified](http://www.linusakesson.net/programming
 
 **How can you tell what the controlling tty is for any given process?**
 
-The [stat](http://linux.die.net/man/5/proc) file for a process will contain that information. 
+The [ctermid](http://linux.die.net/man/3/ctermid) function will report the ctty name for the current process. There is no system or library call that will report that information for another processes. The [stat](http://linux.die.net/man/5/proc) file for any given process will contain that information, though not in a format easily consumed by humans:
+
+              tty_nr %d   The controlling terminal of the process.  (The minor device number is contained in the combination  of  bits
+                          31 to 20 and 7 to 0; the major device number is in bits 15 to 8.)
+
+The ["ps j -p PID"](http://linux.die.net/man/1/ps) command will report the controlling tty in a human readable format for any given PID.
 
 **How can you tell which session is controlled by any given tty?**
 
-Traditionally, there is no easy way to see this information programmatically. (The "[ps j](http://linux.die.net/man/1/ps)" command can help you perform this discovery manually.) I wrote _ctty_ to fill this gap. It does the needed detective work, and reports back to the user. _libctty_ gives you a C interface to this functionality.
+Traditionally, there is no easy way to see this information programmatically. (Again, examining the results of the ["ps j"](http://linux.die.net/man/1/ps)" command will allow you to perform this discovery manually.) I wrote _ctty_ to fill this gap. It does the needed detective work, and reports back to the user. _libctty_ gives you a C interface to this functionality.
 
 
 ## _ctty_ Usage ##
