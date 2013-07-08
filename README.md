@@ -38,7 +38,7 @@ The ["ps j -p PID"](http://linux.die.net/man/1/ps) command will report the contr
 
 **How can you tell which session is controlled by any given tty?**
 
-Traditionally, there is no easy way to see this information programmatically. (Again, examining the results of the ["ps j"](http://linux.die.net/man/1/ps)" command will allow you to perform this discovery manually.) I wrote _ctty_ to fill this gap. It does the needed detective work, and reports back to the user. _libctty_ gives you a C interface to this functionality.
+Traditionally, there is no easy way to see this information programmatically. (Again, examining the results of the ["ps j"](http://linux.die.net/man/1/ps) command will allow you to perform this discovery manually.) I wrote _ctty_ to fill this gap. It does the needed detective work, and reports back to the user. _libctty_ gives you a C interface to this functionality.
 
 
 ## _ctty_ Usage ##
