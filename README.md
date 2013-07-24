@@ -94,7 +94,7 @@ This is best documented inside the source code. However, as a quick overview, _l
 
 ## Installation ##
 
-	git clone git@github.com:emptymonkey/ctty.git
+	git clone https://github.com/emptymonkey/ctty.git
 	cd ctty
 	make
 
