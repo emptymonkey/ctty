@@ -188,8 +188,6 @@ struct sid_node *ctty_get_session(char *tty_name){
 			return(NULL);
 		}
 
-		if(ctty_uid == stat_buf.st_uid){
-
 			if((pid = (int) strtol((pglob.gl_pathv[i]) + 6, NULL, 10)) == 0){
 #ifdef DEBUG
 				fprintf(stderr, "%s: ctty_get_session(): strtol(%lx, %p, %d): %s\n", program_invocation_short_name, \
@@ -280,7 +278,6 @@ struct sid_node *ctty_get_session(char *tty_name){
 					}
 				}
 			}
-		}	
 	}
 	globfree(&pglob);
 
