@@ -13,8 +13,10 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <sys/types.h>
+#include <linux/sysctl.h>
+
 #include <sys/stat.h>
+#include <sys/types.h>
 
 
 #define BUFF_LEN 1024

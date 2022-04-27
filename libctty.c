@@ -16,9 +16,8 @@ void clean_pids(struct pid_node *head);
 void clean_pgids(struct pgid_node *head);
 
 
-// "/dev/pts/" -> 9  +  MAX_INT_LEN
-#define MAX_INT_LEN 10
-#define MAX_PATH_LEN 19
+// "/dev/pts/" -> 9 + KERN_PIDMAX
+#define MAX_PATH_LEN KERN_PIDMAX + 19
 
 
 /************************************************************************
@@ -109,7 +108,7 @@ char *ctty_get_name(int pid){
 					goto CLEAN_UP;
 				}
 				memset(name, 0, strlen(scratch) + 1);
-				strncpy(name, scratch, strlen(scratch));
+				strncpy(name, scratch, MAX_PATH_LEN);
 				goto CLEAN_UP;
 			}
 		}
@@ -566,7 +565,7 @@ int ctty_get_fds(int pid, char *tty, int **fds){
 #endif
 		return(-1);
 	}
-
+	
 	if(!(proc_pid_fd = opendir(path))){
 #ifdef DEBUG
 		fprintf(stderr, "%s: ctty_get_fds(): opendir(%s): %s\n", program_invocation_short_name, \
