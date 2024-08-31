@@ -99,16 +99,13 @@ char *ctty_get_name(int pid){
 			}
 
 			if(stat_info.tty_nr == (int) dev_info.st_rdev){
-				if((name = (char *) malloc(strlen(scratch) + 1)) == NULL){
+				if((name = (char *) strdup(scratch)) == NULL){
 #ifdef DEBUG
-					fprintf(stderr, "%s: ctty_get_name(): malloc(%d): %s\n", program_invocation_short_name, \
+					fprintf(stderr, "%s: ctty_get_name(): strdup(%d): %s\n", program_invocation_short_name, \
 							(int) strlen(scratch) + 1, \
 							strerror(errno));
 #endif
-					goto CLEAN_UP;
 				}
-				memset(name, 0, strlen(scratch) + 1);
-				strncpy(name, scratch, MAX_PATH_LEN);
 				goto CLEAN_UP;
 			}
 		}
